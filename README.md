@@ -69,11 +69,11 @@ The app will start at `https://localhost:5001`
 │                    BloggingApp.Web                          │
 │                  (Blazor WebAssembly)                       │
 │                                                             │
-│  Public Pages:        Admin Pages:                         │
-│  - / (home)          - /admin/login                        │
-│  - /p/{slug}         - /admin/posts                        │
-│  - /about            - /admin/posts/new                    │
-│                      - /admin/posts/{id}/edit              │
+│  Public Pages:        Admin Pages:                          │
+│  - / (home)          - /admin/login                         │
+│  - /p/{slug}         - /admin/posts                         │
+│  - /about            - /admin/posts/new                     │
+│                      - /admin/posts/{id}/edit               │
 └────────────────────┬────────────────────────────────────────┘
                      │
                      │ HTTPS + JWT Bearer Token
@@ -82,14 +82,14 @@ The app will start at `https://localhost:5001`
 │                   BloggingApp.Api                           │
 │              (ASP.NET Core Web API)                         │
 │                                                             │
-│  Public Endpoints:       Admin Endpoints:                  │
-│  - GET /api/posts       - GET /api/admin/posts             │
-│  - GET /api/posts/{slug} - POST /api/admin/posts           │
-│  - GET /healthz         - PUT /api/admin/posts/{id}        │
-│                         - DELETE /api/admin/posts/{id}     │
+│  Public Endpoints:       Admin Endpoints:                   │
+│  - GET /api/posts       - GET /api/admin/posts              │
+│  - GET /api/posts/{slug} - POST /api/admin/posts            │
+│  - GET /healthz         - PUT /api/admin/posts/{id}         │
+│                         - DELETE /api/admin/posts/{id}      │
 │  Auth:                                                      │
-│  - POST /api/auth/login                                    │
-│  - POST /api/auth/logout                                   │
+│  - POST /api/auth/login                                     │
+│  - POST /api/auth/logout                                    │
 └────────────────────┬────────────────────────────────────────┘
                      │
                      │ Entity Framework Core
@@ -98,7 +98,7 @@ The app will start at `https://localhost:5001`
 │                  SQLite Database                            │
 │                  (Data/blogging.db)                         │
 │                                                             │
-│  Tables: Posts, AspNetUsers, AspNetRoles, etc.             │
+│  Tables: Posts, AspNetUsers, AspNetRoles, etc.              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
