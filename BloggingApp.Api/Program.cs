@@ -1,11 +1,86 @@
+using BloggingApp.Api.Data;
+using BloggingApp.Api.Models;
+using BloggingApp.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Database
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+// JWT Authentication
+var jwtKey = builder.Configuration["Jwt:Key"]!;
+var jwtIssuer = builder.Configuration["Jwt:Issuer"]!;
+var jwtAudience = builder.Configuration["Jwt:Audience"]!;
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
+
+builder.Services.AddAuthorization();
+
+// CORS
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
+// Custom Services
+builder.Services.AddScoped<IMarkdownService, MarkdownService>();
+builder.Services.AddScoped<ISlugService, SlugService>();
+
 var app = builder.Build();
+
+// Seed owner user
+await SeedOwnerUser(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -16,29 +91,59 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.UseCors();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+// Health check
+app.MapGet("/healthz", () => Results.Ok(new { status = "healthy" }))
+    .WithName("HealthCheck");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+async Task SeedOwnerUser(WebApplication app)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    // Create Owner role if it doesn't exist
+    if (!await roleManager.RoleExistsAsync("Owner"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Owner"));
+    }
+
+    // Check if any users exist
+    var usersExist = userManager.Users.Any();
+    if (!usersExist)
+    {
+        var ownerEmail = Environment.GetEnvironmentVariable("OWNER_EMAIL") ?? "owner@danyaal.net";
+        var ownerPassword = Environment.GetEnvironmentVariable("OWNER_PASSWORD") ?? "Owner123!";
+
+        var ownerUser = new ApplicationUser
+        {
+            UserName = ownerEmail,
+            Email = ownerEmail,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(ownerUser, ownerPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(ownerUser, "Owner");
+            Console.WriteLine($"Owner user created: {ownerEmail}");
+        }
+        else
+        {
+            Console.WriteLine("Failed to create owner user:");
+            foreach (var error in result.Errors)
+            {
+                Console.WriteLine($"  - {error.Description}");
+            }
+        }
+    }
 }

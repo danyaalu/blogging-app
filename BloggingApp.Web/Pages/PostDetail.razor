@@ -1,0 +1,69 @@
+@page "/p/{slug}"
+@using BloggingApp.Web.Services
+@using BloggingApp.Web.Models
+@inject IPostService PostService
+@inject NavigationManager Navigation
+
+@if (loading)
+{
+    <PageTitle>Loading...</PageTitle>
+    <div class="container py-5">
+        <p><em>Loading post...</em></p>
+    </div>
+}
+else if (post == null)
+{
+    <PageTitle>Post Not Found</PageTitle>
+    <div class="container py-5">
+        <h1>Post Not Found</h1>
+        <p>The post you're looking for doesn't exist.</p>
+        <a href="/" class="btn btn-primary">Back to Home</a>
+    </div>
+}
+else
+{
+    <PageTitle>@post.Title - Danyaal's Blog</PageTitle>
+    <div class="container py-5">
+        <article>
+            <header class="mb-4">
+                <h1>@post.Title</h1>
+                <div class="text-muted">
+                    @if (post.PublishedAt.HasValue)
+                    {
+                        <span>@post.PublishedAt.Value.ToLocalTime().ToString("MMMM dd, yyyy")</span>
+                    }
+                    <span class="ms-3">@post.ReadingMinutes min read</span>
+                </div>
+            </header>
+            <div class="post-content">
+                @((MarkupString)post.BodyHtml)
+            </div>
+        </article>
+        <div class="mt-4">
+            <a href="/" class="btn btn-secondary">← Back to Posts</a>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Slug { get; set; } = string.Empty;
+
+    private PostDetailDto? post;
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loading = true;
+        post = await PostService.GetPostBySlugAsync(Slug);
+        loading = false;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        loading = true;
+        post = await PostService.GetPostBySlugAsync(Slug);
+        loading = false;
+    }
+}
+

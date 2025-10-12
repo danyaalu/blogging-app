@@ -2,6 +2,19 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "Markdig/0.37.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Markdig.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Markdig.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Authorization/8.0.19": {
         "type": "package",
         "dependencies": {
@@ -452,6 +465,19 @@
       }
     },
     "net8.0/browser-wasm": {
+      "Markdig/0.37.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Markdig.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Markdig.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Authorization/8.0.19": {
         "type": "package",
         "dependencies": {
@@ -903,6 +929,29 @@
     }
   },
   "libraries": {
+    "Markdig/0.37.0": {
+      "sha512": "biiu4MTPFjW55qw6v5Aphtj0MjDLJ14x8ndZwkJUHIeqvaSGKeqhLY7S7Vu/S3k7/c9KwhhnaCDP9hdFNUhcNA==",
+      "type": "package",
+      "path": "markdig/0.37.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/Markdig.dll",
+        "lib/net462/Markdig.xml",
+        "lib/net6.0/Markdig.dll",
+        "lib/net6.0/Markdig.xml",
+        "lib/net8.0/Markdig.dll",
+        "lib/net8.0/Markdig.xml",
+        "lib/netstandard2.0/Markdig.dll",
+        "lib/netstandard2.0/Markdig.xml",
+        "lib/netstandard2.1/Markdig.dll",
+        "lib/netstandard2.1/Markdig.xml",
+        "markdig.0.37.0.nupkg.sha512",
+        "markdig.nuspec",
+        "markdig.png",
+        "readme.md"
+      ]
+    },
     "Microsoft.AspNetCore.Authorization/8.0.19": {
       "sha512": "jgpLESu9TKzd4+X4odAAMsac5I2OjP1WHy0tJQm7dlXA8267gsxyv9zR9iDjxQRdjp1zOhkQ+AIAAloYvq3R7g==",
       "type": "package",
@@ -1835,6 +1884,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Markdig >= 0.37.0",
       "Microsoft.AspNetCore.Components.WebAssembly >= 8.0.19",
       "Microsoft.AspNetCore.Components.WebAssembly.DevServer >= 8.0.19",
       "Microsoft.NET.ILLink.Tasks >= 8.0.19",
@@ -1878,6 +1928,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Markdig": {
+            "target": "Package",
+            "version": "[0.37.0, )"
+          },
           "Microsoft.AspNetCore.Components.WebAssembly": {
             "target": "Package",
             "version": "[8.0.19, )"

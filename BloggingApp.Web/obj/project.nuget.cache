@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "z8C2gliMEpmhi7wd8H9BvUy73Y5zq9MFLXuzQnrlhbF9HlqGoNmsXLDaV1iEJqdXhXavJYipid27b9gOKDbI1A==",
+  "dgSpecHash": "h/XwRV3TpDmeVAWFVSweJvo8YzhPdeGSSAgRsYsIvWmmts2R1VfaZbp1AygbgJHwueJVxqI3aeJ4sYOzOGiXSA==",
   "success": true,
   "projectFilePath": "/home/danyaal/Documents/projects/blogging-app/BloggingApp.Web/BloggingApp.Web.csproj",
   "expectedPackageFiles": [
+    "/home/danyaal/.nuget/packages/markdig/0.37.0/markdig.0.37.0.nupkg.sha512",
     "/home/danyaal/.nuget/packages/microsoft.aspnetcore.authorization/8.0.19/microsoft.aspnetcore.authorization.8.0.19.nupkg.sha512",
     "/home/danyaal/.nuget/packages/microsoft.aspnetcore.components/8.0.19/microsoft.aspnetcore.components.8.0.19.nupkg.sha512",
     "/home/danyaal/.nuget/packages/microsoft.aspnetcore.components.analyzers/8.0.19/microsoft.aspnetcore.components.analyzers.8.0.19.nupkg.sha512",
