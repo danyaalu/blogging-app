@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "74IHuFVUj+rMwxk4ly+l3MjqoKudu4Dg2nLaBn4wXGA=",
+  "Source": "BloggingApp.Api",
+  "BasePath": "_content/BloggingApp.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

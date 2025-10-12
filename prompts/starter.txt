@@ -1,0 +1,129 @@
+Prompt: Ultra-Minimal Blog with Web API (ASP.NET Core MVC + Blazor WebAssembly)
+
+Goal:
+Ship a self-hosted blog on danyaal.net where I (Owner) can sign in, write a Markdown post, publish it, and have it appear on the homepage and its own URL. Keep it tiny, but include a minimal Web API for read-only post access.
+
+Solution/Projects already exist:
+- src/BloggingApp.Api  (ASP.NET Core Web API, .NET 8)
+- src/BloggingApp.Web  (Blazor WebAssembly, .NET 8)
+- (Optional) src/BloggingApp.Shared for DTOs
+
+Tech / Constraints:
+- .NET 8
+- API: ASP.NET Core Web API with EF Core + SQLite and ASP.NET Core Identity issuing JWT Bearer tokens
+- WASM: Blazor WebAssembly (standalone) consuming the API over HTTP(S)
+- Auth: Single Owner account (local login only)
+- Markdown: Render to sanitized HTML (no raw HTML)
+- CORS: allow localhost dev origins; easy to switch to https://danyaal.net later
+- Keep code minimal and readable
+
+Data model (EF Core, in the API):
+Post:
+- Id (Guid), Title (required, max 200)
+- Slug (required, unique, lowercase, hyphenated)
+- Summary (nullable, max ~300)
+- BodyMarkdown (required)
+- BodyHtml (cached, from Markdown)
+- Status (Draft|Published)
+- PublishedAt (nullable, UTC)
+- CreatedAt (UTC), UpdatedAt (UTC)
+- ReadingMinutes (int) (simple words/200 heuristic)
+
+User (Identity):
+- Owner role only for this release
+
+API — endpoints (public read, owner write):
+Base path: /api
+
+Public (no auth):
+- GET /api/posts?skip=0&take=10
+  Returns published posts (title, slug, summary, publishedAt, readingMinutes). Paged.
+- GET /api/posts/{slug}
+  Returns a single published post (title, slug, bodyHtml, publishedAt, readingMinutes). 404 if not found.
+
+Auth:
+- POST /api/auth/login
+  Body: { email, password } -> returns { accessToken, expiresAt } (JWT Bearer).
+- POST /api/auth/logout
+  No server state needed in v1; client discards token.
+
+Owner (Bearer auth, role=Owner):
+- POST /api/admin/posts        (create draft)
+- PUT  /api/admin/posts/{id}   (edit fields; can toggle to Published; set PublishedAt if null)
+- DELETE /api/admin/posts/{id} (hard-delete acceptable in v1)
+- GET /api/admin/posts?status= (list including drafts)
+
+Non-functional:
+- Validate slugs, lengths; enforce unique slug
+- Sanitize Markdown to safe HTML on save (or on publish)
+- Timestamps in UTC
+- Proper status codes
+- Health probe at GET /healthz (200 OK)
+
+Auth specifics:
+- ASP.NET Core Identity with EntityFramework + SQLite
+- Issue JWT tokens (HS256) with role=Owner
+- First-run bootstrap: if no users exist, create Owner from env vars (OWNER_EMAIL, OWNER_PASSWORD)
+- Lockout after repeated failures; reasonable password complexity
+
+CORS:
+- Allow https://localhost:5001, http://localhost:5000, and the WASM dev origin (e.g., https://localhost:5173)
+- Methods: GET, POST, PUT, DELETE
+- Headers: Content-Type, Authorization
+- Disabled for production by default; single config switch to enable specific origins
+
+Storage (API):
+- SQLite db file under a Data/ folder in the API project (configurable)
+- EF Core migrations included
+- Service for Markdown -> sanitized HTML
+
+WASM — pages & flows:
+
+Public:
+- /                   list published posts (title, date, summary)
+- /p/{slug}           post detail (render already-sanitized HTML from API)
+- /about              static placeholder page
+
+Owner Admin (client-side):
+- /admin/login        email + password -> calls /api/auth/login, store JWT (sessionStorage for v1)
+- /admin/posts        list drafts/published (admin list endpoint)
+- /admin/posts/new    create draft (Title, Slug auto-suggest, Summary, BodyMarkdown, Status)
+- /admin/posts/{id}/edit  edit/post, toggle to Published; show PublishedAt
+- Preview optional; OK to skip for v1
+
+HTTP client:
+- Centralize API base URL (dev/prod config)
+- Attach Authorization: Bearer <token> for admin routes
+- Basic error handling (401 -> login; 403 -> not owner; validation errors inline)
+
+UI/UX:
+- Clean, responsive layout; readable typography
+- Slug auto-suggest from Title on client; server validates/normalizes
+- Minimal validation messages
+- Display dates in local time; store in UTC
+
+README updates (both projects):
+- How to run locally (two terminals):
+  1) API: dotnet ef database update, then dotnet run
+  2) WASM: dotnet run
+- Env vars for bootstrap Owner (OWNER_EMAIL, OWNER_PASSWORD)
+- API base URL for WASM (dev & production)
+- Example curl for login, list posts, get by slug
+
+Acceptance criteria:
+- API + WASM run locally
+- On first run, Owner seeded from env; I can log in at /admin/login
+- I can create a draft, then publish it
+- The post appears on / and at /p/{slug} in the WASM app
+- Public API: GET /api/posts and GET /api/posts/{slug} return correct data
+- Invalid slug returns 404
+- JWT required for /api/admin/*; unauthenticated yields 401
+- CORS works for WASM dev origin
+
+Do NOT add (out of scope for this release):
+- Comments, reactions, tags, search, RSS/sitemap, image uploads, SEO/OG automation, caching, analytics, OAuth, email flows, password reset, multi-user roles.
+
+Important:
+- Modify only what’s needed in src/BloggingApp.Api and src/BloggingApp.Web.
+- Keep structure intact. Keep code concise and conventional.
+
