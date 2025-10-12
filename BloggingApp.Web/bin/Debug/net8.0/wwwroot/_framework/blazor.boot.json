@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "BloggingApp.Web",
   "resources": {
-    "hash": "sha256-DcgtOmvA6z4oC9GoPDWivMbjZSe32yUCCwXu3UyTFUg=",
+    "hash": "sha256-aQPW0melh3q28bYeccGRUFGT0/5b8NrceZFz9Iw2vzk=",
     "jsModuleNative": {
       "dotnet.native.8.0.19.uq5t7b8ixx.js": "sha256-O/NCYcAN9uPocD7ns7AzF/cqx7f5vL1PTJCQs0vEXyk="
     },
@@ -209,10 +209,10 @@
       "mscorlib.wasm": "sha256-RLW/7NVuhoPfq151II3kX2kWHgBwQgpCw9aemQNg3to=",
       "netstandard.wasm": "sha256-lAg5WvTiA8wbsIwlr51xh0YWpXT9F5EX3Cnv+11O/mU=",
       "System.Private.CoreLib.wasm": "sha256-3O3muuRQwoLRecYRjfIFWUURvTjP4EmD2O8wYg2UDNY=",
-      "BloggingApp.Web.wasm": "sha256-1ihAnOjpSprSR+pNYs3lMwTok3xfA3TjIwHJlnSmISQ="
+      "BloggingApp.Web.wasm": "sha256-liyOHUNTmA8M3ht85dTUqMM5x73Nc6tSQqn0jTa4GcE="
     },
     "pdb": {
-      "BloggingApp.Web.pdb": "sha256-7ruED8fdkWCPOTz+tDPA2sUtnXx1MrLBFNQS1lGouLM="
+      "BloggingApp.Web.pdb": "sha256-02MU9+Fr3gVIOjNfSJWQ2RlIj5pnhVJ93SbsYLj5iww="
     }
   },
   "cacheBootResources": true,

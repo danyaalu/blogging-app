@@ -2,21 +2,21 @@
 @inject IAuthService AuthService
 @inject NavigationManager Navigation
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg" style="background-color: #000000; border-bottom: 1px solid #1f2937;">
     <div class="container">
-        <a class="navbar-brand" href="/">Danyaal's Blog</a>
-        <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
+        <a class="navbar-brand" href="/" style="color: #ffffff; font-weight: 300; font-size: 1.25rem;">Blog</a>
+        <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu" style="border-color: #374151;">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="@NavMenuCssClass navbar-collapse">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All" style="color: #9ca3af;">
                         Home
                     </NavLink>
                 </li>
                 <li class="nav-item">
-                    <NavLink class="nav-link" href="about">
+                    <NavLink class="nav-link" href="about" style="color: #9ca3af;">
                         About
                     </NavLink>
                 </li>
@@ -25,12 +25,12 @@
                 @if (isAuthenticated)
                 {
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="admin/posts">
+                        <NavLink class="nav-link" href="admin/posts" style="color: #9ca3af;">
                             <i class="bi bi-pencil-square"></i> Manage Posts
                         </NavLink>
                     </li>
                     <li class="nav-item">
-                        <button class="btn btn-outline-light btn-sm ms-2" @onclick="HandleLogout">
+                        <button class="btn btn-outline-secondary btn-sm ms-2" @onclick="HandleLogout" style="border-color: #374151; color: #9ca3af;">
                             <i class="bi bi-box-arrow-right"></i> Logout
                         </button>
                     </li>
@@ -38,7 +38,7 @@
                 else
                 {
                     <li class="nav-item">
-                        <NavLink class="nav-link" href="admin/login">
+                        <NavLink class="nav-link" href="admin/login" style="color: #9ca3af;">
                             <i class="bi bi-key"></i> Login
                         </NavLink>
                     </li>
