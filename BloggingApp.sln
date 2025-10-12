@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingApp.Api", "BloggingApp.Api\BloggingApp.Api.csproj", "{9A7FB236-23D0-43D0-BD4C-1EE14AE0D23C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingApp.Web", "BloggingApp.Web\BloggingApp.Web.csproj", "{6800E85B-C936-4F72-A244-39696EC3AF0E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9A7FB236-23D0-43D0-BD4C-1EE14AE0D23C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A7FB236-23D0-43D0-BD4C-1EE14AE0D23C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A7FB236-23D0-43D0-BD4C-1EE14AE0D23C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A7FB236-23D0-43D0-BD4C-1EE14AE0D23C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6800E85B-C936-4F72-A244-39696EC3AF0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6800E85B-C936-4F72-A244-39696EC3AF0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6800E85B-C936-4F72-A244-39696EC3AF0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6800E85B-C936-4F72-A244-39696EC3AF0E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
