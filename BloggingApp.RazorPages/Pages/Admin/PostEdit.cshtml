@@ -30,9 +30,14 @@
             </div>
 
             <div class="mb-3">
-                <label for="slug" class="form-label">Slug</label>
-                <input type="text" class="form-control" id="slug" asp-for="Slug" required maxlength="200" />
-                <small class="form-text text-muted">URL-friendly version of the title (lowercase, hyphens)</small>
+                <label for="slug" class="form-label">Auto-Generated Slug</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-dark text-info border-info">
+                        <i class="bi bi-link-45deg"></i>
+                    </span>
+                    <input type="text" class="form-control bg-dark text-info border-info font-monospace" id="slug" asp-for="Slug" readonly />
+                </div>
+                <small class="form-text text-muted">URL-friendly version auto-generated from title</small>
             </div>
 
             <div class="mb-3">
@@ -70,3 +75,34 @@
     }
 </div>
 
+@section Scripts {
+    <script>
+        // Real-time slug generation
+        document.getElementById('title').addEventListener('input', function(e) {
+            const title = e.target.value;
+            const slug = generateSlug(title);
+            document.getElementById('slug').value = slug;
+        });
+
+        function generateSlug(title) {
+            if (!title) return '';
+            
+            // Convert to lowercase
+            let slug = title.toLowerCase();
+            
+            // Remove special characters, keep only alphanumeric, spaces, and hyphens
+            slug = slug.replace(/[^a-z0-9\s-]/g, '');
+            
+            // Replace multiple spaces with single hyphen
+            slug = slug.replace(/\s+/g, '-');
+            
+            // Replace multiple hyphens with single hyphen
+            slug = slug.replace(/-+/g, '-');
+            
+            // Trim hyphens from start and end
+            slug = slug.replace(/^-+|-+$/g, '');
+            
+            return slug;
+        }
+    </script>
+}
