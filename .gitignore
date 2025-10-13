@@ -1,0 +1,65 @@
+# Ignore build outputs for BloggingApp.Api
+BloggingApp.Api/bin/
+BloggingApp.Api/obj/
+BloggingApp.Api/publish/
+
+# Ignore build outputs for BloggingApp.Web
+BloggingApp.Web/bin/
+BloggingApp.Web/obj/
+BloggingApp.Web/publish/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore Rider/JetBrains IDE files
+.idea/
+*.iml
+
+# Ignore Visual Studio Code files
+.vscode/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.temp
+*.pid
+*.sublime-workspace
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore database files
+BloggingApp.Api/Data/blogging.db
+
+# Allow database migrations and schema files
+!BloggingApp.Api/Migrations/*.cs
+!BloggingApp.Api/Migrations/*.Designer.cs
+!BloggingApp.Api/Data/blogging.db
+
+# Ignore temporary database files
+BloggingApp.Api/Data/blogging.db-shm
+BloggingApp.Api/Data/blogging.db-wal
+
+# Ignore dependency directories
+node_modules/
+wwwroot/lib/
+
+# Ignore compiled Razor files
+**/*.g.cs
+**/*.g.i.cs
+**/*.razor.g.cs
+
+# Ignore EF Core migrations snapshots
+Migrations/*Snapshot.cs
+
+# Ignore sensitive configuration files
+BloggingApp.Api/appsettings.*.json
+BloggingApp.Web/wwwroot/appsettings.*.json
+
+# Ignore lock files
+project.lock.json
+global.json.lock
