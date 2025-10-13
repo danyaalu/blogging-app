@@ -28,10 +28,10 @@
         <div class="row mb-4">
             <div class="col-md-4">
                 <form method="get">
-                    <select class="form-select" name="status" onchange="this.form.submit()" style="background-color: #0a0a0a; border-color: #1f2937; color: #e0e0e0;">
-                        <option value="" selected="@(string.IsNullOrEmpty(Model.StatusFilter))">All Posts (@Model.AllPosts.Count)</option>
-                        <option value="Draft" selected="@(Model.StatusFilter == "Draft")">Drafts Only (@Model.DraftCount)</option>
-                        <option value="Published" selected="@(Model.StatusFilter == "Published")">Published Only (@Model.PublishedCount)</option>
+                    <select class="form-select" asp-for="StatusFilter" onchange="this.form.submit()" style="background-color: #0a0a0a; border-color: #1f2937; color: #e0e0e0;">
+                        <option value="">All Posts (@Model.AllPosts.Count)</option>
+                        <option value="Draft">Drafts Only (@Model.DraftCount)</option>
+                        <option value="Published">Published Only (@Model.PublishedCount)</option>
                     </select>
                 </form>
             </div>
@@ -95,4 +95,3 @@
         }
     }
 </div>
-
