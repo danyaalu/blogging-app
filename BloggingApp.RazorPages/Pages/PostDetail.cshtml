@@ -6,7 +6,7 @@
 
 @if (Model.Loading)
 {
-    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
+    <div class="container py-5">
         <div class="placeholder-glow">
             <h1 class="placeholder col-8 mb-4" style="background-color: #1f2937;"></h1>
             <div class="placeholder col-4 mb-4" style="background-color: #1f2937;"></div>
@@ -19,7 +19,7 @@
 }
 else if (Model.Post == null)
 {
-    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
+    <div class="container py-5">
         <h1>Post Not Found</h1>
         <p>The post you're looking for doesn't exist.</p>
         <a href="/" class="btn btn-primary">Back to Home</a>
@@ -27,7 +27,7 @@ else if (Model.Post == null)
 }
 else
 {
-    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
+    <div class="container py-5">
         <article>
             <header class="mb-4">
                 <h1>@Model.Post.Title</h1>
@@ -48,4 +48,3 @@ else
         </div>
     </div>
 }
-
