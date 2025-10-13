@@ -103,6 +103,9 @@
     private async Task LoadPost()
     {
         loading = true;
+        
+        // Optimize: Get all posts once and find the one we need
+        // In a larger app, you'd want a dedicated GetPostById endpoint
         var posts = await PostService.GetAdminPostsAsync();
         post = posts.FirstOrDefault(p => p.Id == Id);
 

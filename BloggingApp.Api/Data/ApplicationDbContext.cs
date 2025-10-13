@@ -21,9 +21,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         {
             entity.HasKey(p => p.Id);
             entity.HasIndex(p => p.Slug).IsUnique();
+            entity.HasIndex(p => p.Status);
+            entity.HasIndex(p => p.PublishedAt);
+            entity.HasIndex(p => p.UpdatedAt);
             entity.Property(p => p.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(p => p.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
         });
     }
 }
-

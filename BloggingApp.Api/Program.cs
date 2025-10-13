@@ -15,6 +15,28 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add Response Caching
+builder.Services.AddResponseCaching();
+
+// Add Memory Caching
+builder.Services.AddMemoryCache();
+
+// Add Response Compression
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = new[]
+    {
+        "text/plain",
+        "text/html",
+        "text/css",
+        "application/javascript",
+        "application/json",
+        "application/xml",
+        "text/xml"
+    };
+});
+
 // Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -90,6 +112,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Enable Response Compression
+app.UseResponseCompression();
+
+// Enable Response Caching
+app.UseResponseCaching();
 
 app.UseCors();
 

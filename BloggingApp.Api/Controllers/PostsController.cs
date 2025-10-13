@@ -17,6 +17,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpGet]
+    [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "skip", "take" })]
     public async Task<ActionResult<IEnumerable<PostListDto>>> GetPublishedPosts(
         [FromQuery] int skip = 0,
         [FromQuery] int take = 10)
@@ -24,6 +25,7 @@ public class PostsController : ControllerBase
         take = Math.Min(take, 50); // Max 50 items
 
         var posts = await _context.Posts
+            .AsNoTracking()
             .Where(p => p.Status == Models.PostStatus.Published)
             .OrderByDescending(p => p.PublishedAt)
             .Skip(skip)
@@ -43,9 +45,11 @@ public class PostsController : ControllerBase
     }
 
     [HttpGet("{slug}")]
+    [ResponseCache(Duration = 300, Location = ResponseCacheLocation.Any, VaryByQueryKeys = new[] { "slug" })]
     public async Task<ActionResult<PostDetailDto>> GetPostBySlug(string slug)
     {
         var post = await _context.Posts
+            .AsNoTracking()
             .Where(p => p.Slug == slug && p.Status == Models.PostStatus.Published)
             .Select(p => new PostDetailDto(
                 p.Id,
@@ -65,4 +69,3 @@ public class PostsController : ControllerBase
         return Ok(post);
     }
 }
-

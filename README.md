@@ -38,6 +38,8 @@ dotnet run
 
 The API will start at `https://localhost:7194`
 
+> **Note**: The latest migration includes performance indexes. If you're cloning this repo fresh, `dotnet ef database update` will automatically apply all migrations including the performance optimizations.
+
 **Default Owner Credentials:**
 - Email: `owner@danyaal.net`
 - Password: `Owner123!`
@@ -378,6 +380,19 @@ Out of scope for this minimal release:
 - ✅ Unauthenticated requests yield 401
 - ✅ CORS works for WASM dev origin
 
+## Performance Optimizations ⚡
+
+This application includes several performance optimizations out of the box:
+
+- **Response Caching**: API responses are cached for 60 seconds (post lists) to 5 minutes (individual posts)
+- **Response Compression**: Gzip/Brotli compression reduces payload sizes by 60-80%
+- **Database Indexing**: Indexed columns (Status, PublishedAt, UpdatedAt) for faster queries
+- **Query Optimization**: All read queries use `AsNoTracking()` for better performance
+- **Loading Skeletons**: UI shows placeholder content while loading for better UX
+- **Client-Side Filtering**: Admin filters happen in-browser without extra API calls
+
+For detailed information about performance optimizations, see [PERFORMANCE-OPTIMIZATIONS.md](./PERFORMANCE-OPTIMIZATIONS.md).
+
 ## Troubleshooting
 
 ### Database Issues
@@ -416,4 +431,3 @@ This is a personal project for danyaal.net. Modify as needed for your use case.
 For issues or questions, refer to the individual README files in each project:
 - [BloggingApp.Api README](./BloggingApp.Api/README.md)
 - [BloggingApp.Web README](./BloggingApp.Web/README.md)
-

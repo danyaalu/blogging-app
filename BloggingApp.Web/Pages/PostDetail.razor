@@ -7,14 +7,21 @@
 @if (loading)
 {
     <PageTitle>Loading...</PageTitle>
-    <div class="container py-5">
-        <p><em>Loading post...</em></p>
+    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
+        <div class="placeholder-glow">
+            <h1 class="placeholder col-8 mb-4" style="background-color: #1f2937;"></h1>
+            <div class="placeholder col-4 mb-4" style="background-color: #1f2937;"></div>
+            <p class="placeholder col-12" style="background-color: #1f2937;"></p>
+            <p class="placeholder col-10" style="background-color: #1f2937;"></p>
+            <p class="placeholder col-11" style="background-color: #1f2937;"></p>
+            <p class="placeholder col-9" style="background-color: #1f2937;"></p>
+        </div>
     </div>
 }
 else if (post == null)
 {
     <PageTitle>Post Not Found</PageTitle>
-    <div class="container py-5">
+    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
         <h1>Post Not Found</h1>
         <p>The post you're looking for doesn't exist.</p>
         <a href="/" class="btn btn-primary">Back to Home</a>
@@ -23,7 +30,7 @@ else if (post == null)
 else
 {
     <PageTitle>@post.Title - Danyaal's Blog</PageTitle>
-    <div class="container py-5">
+    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
         <article>
             <header class="mb-4">
                 <h1>@post.Title</h1>
@@ -52,18 +59,13 @@ else
     private PostDetailDto? post;
     private bool loading = true;
 
-    protected override async Task OnInitializedAsync()
-    {
-        loading = true;
-        post = await PostService.GetPostBySlugAsync(Slug);
-        loading = false;
-    }
-
     protected override async Task OnParametersSetAsync()
     {
+        if (string.IsNullOrEmpty(Slug))
+            return;
+            
         loading = true;
         post = await PostService.GetPostBySlugAsync(Slug);
         loading = false;
     }
 }
-

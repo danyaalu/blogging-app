@@ -6,12 +6,27 @@
 
 <PageTitle>Home - Danyaal's Blog</PageTitle>
 
-<div class="container py-5">
+<div class="container py-5" style="background-color: #000000; min-height: 80vh;">
     <h1 class="mb-4">Blog Posts</h1>
 
     @if (loading)
     {
-        <p><em>Loading posts...</em></p>
+        <div class="row g-4">
+            @for (int i = 0; i < 3; i++)
+            {
+                <div class="col-12">
+                    <div class="card" style="background-color: #000000; border: 1px solid #1f2937;">
+                        <div class="card-body">
+                            <div class="placeholder-glow">
+                                <span class="placeholder col-6 mb-2" style="background-color: #1f2937;"></span>
+                                <span class="placeholder col-12" style="background-color: #1f2937;"></span>
+                                <span class="placeholder col-8" style="background-color: #1f2937;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     }
     else if (!posts.Any())
     {
@@ -52,6 +67,11 @@
     private bool loading = true;
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadPosts();
+    }
+
+    private async Task LoadPosts()
     {
         loading = true;
         posts = await PostService.GetPublishedPostsAsync(0, 20);

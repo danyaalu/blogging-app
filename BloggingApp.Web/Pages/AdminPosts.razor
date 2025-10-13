@@ -38,7 +38,7 @@
             </div>
         </div>
 
-        @if (!posts.Any())
+        @if (!filteredPosts.Any())
         {
             <div class="alert alert-info" style="background-color: #1e3a5f; border-color: #2563eb; color: #93c5fd;">
                 <i class="bi bi-info-circle"></i> No posts found. Click "New Post" to create your first blog post!
@@ -59,7 +59,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var post in posts)
+                            @foreach (var post in filteredPosts)
                             {
                                 <tr style="border-bottom: 1px solid #1f2937;">
                                     <td style="padding: 1rem;">
@@ -96,10 +96,9 @@
 </div>
 
 @code {
-    private List<PostAdminDto> posts = new();
+    private List<PostAdminDto> filteredPosts = new();
     private List<PostAdminDto> allPosts = new();
     private bool loading = true;
-    private bool initialLoad = true;
     private string? statusFilter = null;
 
     private int draftCount => allPosts.Count(p => p.Status == "Draft");
@@ -118,11 +117,22 @@
 
     private async Task LoadPosts()
     {
-        loading = initialLoad;
+        loading = true;
         allPosts = await PostService.GetAdminPostsAsync(null);
-        posts = await PostService.GetAdminPostsAsync(statusFilter);
+        ApplyFilter();
         loading = false;
-        initialLoad = false;
+    }
+
+    private void ApplyFilter()
+    {
+        if (string.IsNullOrEmpty(statusFilter))
+        {
+            filteredPosts = allPosts;
+        }
+        else
+        {
+            filteredPosts = allPosts.Where(p => p.Status == statusFilter).ToList();
+        }
     }
 
     private async Task OnStatusFilterChange(ChangeEventArgs e)
@@ -132,21 +142,16 @@
         {
             statusFilter = null;
         }
-        await LoadPosts();
+        ApplyFilter();
+        await Task.CompletedTask; // Fix async warning
     }
 
     private async Task DeletePost(Guid id)
     {
-        // Simple confirmation (in production, use a modal)
-        var post = posts.FirstOrDefault(p => p.Id == id);
-        if (post != null)
+        var success = await PostService.DeletePostAsync(id);
+        if (success)
         {
-            // Note: JavaScript confirm would need JS interop, so we'll just delete for now
-            var success = await PostService.DeletePostAsync(id);
-            if (success)
-            {
-                await LoadPosts();
-            }
+            await LoadPosts();
         }
     }
 

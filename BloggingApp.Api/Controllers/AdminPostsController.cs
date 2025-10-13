@@ -30,7 +30,7 @@ public class AdminPostsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PostAdminDto>>> GetAllPosts([FromQuery] string? status = null)
     {
-        var query = _context.Posts.AsQueryable();
+        var query = _context.Posts.AsNoTracking().AsQueryable();
 
         if (!string.IsNullOrEmpty(status) && Enum.TryParse<PostStatus>(status, true, out var parsedStatus))
         {

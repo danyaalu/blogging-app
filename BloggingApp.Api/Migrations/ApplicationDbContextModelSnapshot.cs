@@ -130,8 +130,14 @@ namespace BloggingApp.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PublishedAt");
+
                     b.HasIndex("Slug")
                         .IsUnique();
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("UpdatedAt");
 
                     b.ToTable("Posts");
                 });
