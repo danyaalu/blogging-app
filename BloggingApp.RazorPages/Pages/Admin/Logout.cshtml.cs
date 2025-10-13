@@ -13,10 +13,15 @@ public class LogoutModel : PageModel
         _authService = authService;
     }
 
+    public async Task<IActionResult> OnGetAsync()
+    {
+        await _authService.LogoutAsync();
+        return Page();
+    }
+
     public async Task<IActionResult> OnPostAsync()
     {
         await _authService.LogoutAsync();
         return RedirectToPage("/Index");
     }
 }
-

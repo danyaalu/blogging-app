@@ -47,11 +47,9 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <form method="post" action="/Admin/Logout" style="display: inline;">
-                                    <button type="submit" class="btn btn-outline-secondary btn-sm ms-2" style="border-color: #374151; color: #9ca3af;">
-                                        <i class="bi bi-box-arrow-right"></i> Logout
-                                    </button>
-                                </form>
+                                <a class="nav-link" href="/Admin/Logout" style="color: #9ca3af;">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a>
                             </li>
                         }
                         else
@@ -82,4 +80,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
