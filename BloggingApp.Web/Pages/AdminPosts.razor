@@ -30,10 +30,10 @@
     {
         <div class="row mb-4">
             <div class="col-md-4">
-                <select class="form-select" @onchange="OnStatusFilterChange" style="background-color: #0a0a0a; border-color: #1f2937; color: #e0e0e0;">
-                    <option value="">All Posts (@posts.Count)</option>
-                    <option value="Draft">Drafts Only</option>
-                    <option value="Published">Published Only</option>
+                <select class="form-select" value="@(statusFilter ?? "")" @onchange="OnStatusFilterChange" style="background-color: #0a0a0a; border-color: #1f2937; color: #e0e0e0;">
+                    <option value="">All Posts (@allPosts.Count)</option>
+                    <option value="Draft">Drafts Only (@draftCount)</option>
+                    <option value="Published">Published Only (@publishedCount)</option>
                 </select>
             </div>
         </div>
@@ -97,8 +97,12 @@
 
 @code {
     private List<PostAdminDto> posts = new();
+    private List<PostAdminDto> allPosts = new();
     private bool loading = true;
     private string? statusFilter = null;
+
+    private int draftCount => allPosts.Count(p => p.Status == "Draft");
+    private int publishedCount => allPosts.Count(p => p.Status == "Published");
 
     protected override async Task OnInitializedAsync()
     {
@@ -114,6 +118,7 @@
     private async Task LoadPosts()
     {
         loading = true;
+        allPosts = await PostService.GetAdminPostsAsync(null);
         posts = await PostService.GetAdminPostsAsync(statusFilter);
         loading = false;
     }
