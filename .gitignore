@@ -3,10 +3,10 @@ BloggingApp.Api/bin/
 BloggingApp.Api/obj/
 BloggingApp.Api/publish/
 
-# Ignore build outputs for BloggingApp.Web
-BloggingApp.Web/bin/
-BloggingApp.Web/obj/
-BloggingApp.Web/publish/
+# Ignore build outputs for BloggingApp.RazorPages
+BloggingApp.RazorPages/bin/
+BloggingApp.RazorPages/obj/
+BloggingApp.RazorPages/publish/
 
 # Ignore user-specific files
 *.user
@@ -49,9 +49,7 @@ node_modules/
 wwwroot/lib/
 
 # Ignore compiled Razor files
-**/*.g.cs
-**/*.g.i.cs
-**/*.razor.g.cs
+**/*.cshtml.g.cs
 
 # Ignore EF Core migrations snapshots
 Migrations/*Snapshot.cs

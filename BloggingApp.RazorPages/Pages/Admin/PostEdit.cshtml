@@ -1,0 +1,72 @@
+@page "/Admin/Posts/{id:guid}/Edit"
+@model AdminPostEditModel
+@{
+    ViewData["Title"] = "Edit Post - Admin";
+}
+
+<div class="container py-5">
+    <h1 class="mb-4">Edit Post</h1>
+
+    @if (Model.Loading)
+    {
+        <p><em>Loading post...</em></p>
+    }
+    else if (Model.Post == null)
+    {
+        <div class="alert alert-danger">Post not found.</div>
+        <a href="/Admin/Posts" class="btn btn-secondary">Back to Posts</a>
+    }
+    else
+    {
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <form method="post">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" asp-for="Title" required maxlength="200" />
+            </div>
+
+            <div class="mb-3">
+                <label for="slug" class="form-label">Slug</label>
+                <input type="text" class="form-control" id="slug" asp-for="Slug" required maxlength="200" />
+                <small class="form-text text-muted">URL-friendly version of the title (lowercase, hyphens)</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="summary" class="form-label">Summary (Optional)</label>
+                <textarea class="form-control" id="summary" asp-for="Summary" rows="2" maxlength="300"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="bodyMarkdown" class="form-label">Body (Markdown)</label>
+                <textarea class="form-control" id="bodyMarkdown" asp-for="BodyMarkdown" rows="15" required></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" asp-for="Status">
+                    <option value="Draft">Draft</option>
+                    <option value="Published">Published</option>
+                </select>
+            </div>
+
+            @if (Model.Post.PublishedAt.HasValue)
+            {
+                <div class="mb-3">
+                    <small class="text-muted">Published: @Model.Post.PublishedAt.Value.ToLocalTime().ToString("MMMM dd, yyyy HH:mm")</small>
+                </div>
+            }
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <span>Update Post</span>
+                </button>
+                <a href="/Admin/Posts" class="btn btn-secondary ms-2">Cancel</a>
+            </div>
+        </form>
+    }
+</div>
+

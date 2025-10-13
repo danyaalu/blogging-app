@@ -1,0 +1,61 @@
+@page "/Admin/Posts/New"
+@model AdminPostNewModel
+@{
+    ViewData["Title"] = "New Post - Admin";
+}
+
+<div class="container py-5">
+    <h1 class="mb-4">Create New Post</h1>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">@Model.SuccessMessage</div>
+    }
+
+    <form method="post">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" asp-for="Title" required maxlength="200" />
+        </div>
+
+        <div class="mb-3">
+            <label for="slug" class="form-label">Slug</label>
+            <input type="text" class="form-control" id="slug" asp-for="Slug" maxlength="200" />
+            <small class="form-text text-muted">Leave blank to auto-generate from title. URL-friendly version (lowercase, hyphens)</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="summary" class="form-label">Summary (Optional)</label>
+            <textarea class="form-control" id="summary" asp-for="Summary" rows="2" maxlength="300"></textarea>
+            <small class="form-text text-muted">Brief description shown in the post list</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="bodyMarkdown" class="form-label">Body (Markdown)</label>
+            <textarea class="form-control" id="bodyMarkdown" asp-for="BodyMarkdown" rows="15" required></textarea>
+            <small class="form-text text-muted">Write your post content in Markdown format</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select" id="status" asp-for="Status">
+                <option value="Draft">Draft</option>
+                <option value="Published">Published</option>
+            </select>
+            <small class="form-text text-muted">Only published posts are visible on the homepage</small>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> Create Post
+            </button>
+            <a href="/Admin/Posts" class="btn btn-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+

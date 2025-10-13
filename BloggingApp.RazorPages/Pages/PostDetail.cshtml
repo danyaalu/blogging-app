@@ -1,0 +1,51 @@
+@page "/Post/{slug}"
+@model PostDetailModel
+@{
+    ViewData["Title"] = Model.Post?.Title ?? "Loading...";
+}
+
+@if (Model.Loading)
+{
+    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
+        <div class="placeholder-glow">
+            <h1 class="placeholder col-8 mb-4" style="background-color: #1f2937;"></h1>
+            <div class="placeholder col-4 mb-4" style="background-color: #1f2937;"></div>
+            <p class="placeholder col-12" style="background-color: #1f2937;"></p>
+            <p class="placeholder col-10" style="background-color: #1f2937;"></p>
+            <p class="placeholder col-11" style="background-color: #1f2937;"></p>
+            <p class="placeholder col-9" style="background-color: #1f2937;"></p>
+        </div>
+    </div>
+}
+else if (Model.Post == null)
+{
+    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
+        <h1>Post Not Found</h1>
+        <p>The post you're looking for doesn't exist.</p>
+        <a href="/" class="btn btn-primary">Back to Home</a>
+    </div>
+}
+else
+{
+    <div class="container py-5" style="background-color: #000000; min-height: 80vh;">
+        <article>
+            <header class="mb-4">
+                <h1>@Model.Post.Title</h1>
+                <div class="text-muted">
+                    @if (Model.Post.PublishedAt.HasValue)
+                    {
+                        <span>@Model.Post.PublishedAt.Value.ToLocalTime().ToString("MMMM dd, yyyy")</span>
+                    }
+                    <span class="ms-3">@Model.Post.ReadingMinutes min read</span>
+                </div>
+            </header>
+            <div class="post-content">
+                @Html.Raw(Model.Post.BodyHtml)
+            </div>
+        </article>
+        <div class="mt-4">
+            <a href="/" class="btn btn-secondary">← Back to Posts</a>
+        </div>
+    </div>
+}
+

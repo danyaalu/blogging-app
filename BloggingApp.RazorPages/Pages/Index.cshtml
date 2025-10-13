@@ -1,0 +1,62 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container py-5" style="background-color: #000000; min-height: 80vh;">
+    <h1 class="mb-4">Blog Posts</h1>
+
+    @if (Model.Loading)
+    {
+        <div class="row g-4">
+            @for (int i = 0; i < 3; i++)
+            {
+                <div class="col-12">
+                    <div class="card" style="background-color: #000000; border: 1px solid #1f2937;">
+                        <div class="card-body">
+                            <div class="placeholder-glow">
+                                <span class="placeholder col-6 mb-2" style="background-color: #1f2937;"></span>
+                                <span class="placeholder col-12" style="background-color: #1f2937;"></span>
+                                <span class="placeholder col-8" style="background-color: #1f2937;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else if (!Model.Posts.Any())
+    {
+        <p>No published posts yet.</p>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var post in Model.Posts)
+            {
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title h4">
+                                <a href="/Post/@post.Slug" class="text-decoration-none">@post.Title</a>
+                            </h2>
+                            @if (!string.IsNullOrEmpty(post.Summary))
+                            {
+                                <p class="card-text text-muted">@post.Summary</p>
+                            }
+                            <div class="text-muted small">
+                                @if (post.PublishedAt.HasValue)
+                                {
+                                    <span>@post.PublishedAt.Value.ToLocalTime().ToString("MMMM dd, yyyy")</span>
+                                }
+                                <span class="ms-3">@post.ReadingMinutes min read</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
