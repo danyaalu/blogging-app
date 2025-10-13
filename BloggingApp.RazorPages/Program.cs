@@ -26,10 +26,15 @@ builder.Services.AddScoped<ISlugService, SlugService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromHours(2);
+    options.IdleTimeout = TimeSpan.FromDays(7); // Stay logged in for 7 days
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.Name = ".BloggingApp.Session";
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    // Use secure policy based on environment
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() 
+        ? CookieSecurePolicy.SameAsRequest 
+        : CookieSecurePolicy.Always;
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -55,4 +60,3 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
-
