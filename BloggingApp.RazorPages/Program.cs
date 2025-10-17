@@ -2,6 +2,15 @@ using BloggingApp.RazorPages.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure forwarded headers for reverse proxy support
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+                               Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 
@@ -48,6 +57,9 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
+// Configure forwarded headers (must be before other middleware)
+app.UseForwardedHeaders();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -55,7 +67,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Only use HTTPS redirection in development or when not running in container
+// When behind reverse proxy, the proxy handles HTTPS
+if (app.Environment.IsDevelopment() && string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")))
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseStaticFiles();
 
 app.UseRouting();

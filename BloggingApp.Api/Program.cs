@@ -9,6 +9,15 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure forwarded headers for reverse proxy support
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | 
+                               Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
@@ -89,8 +98,17 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// CORS
+// CORS - Support both configuration and environment variables
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+
+// Also check for comma-separated environment variable
+var corsEnv = builder.Configuration["CORS_ALLOWED_ORIGINS"];
+if (!string.IsNullOrEmpty(corsEnv))
+{
+    var envOrigins = corsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    allowedOrigins = allowedOrigins.Concat(envOrigins).Distinct().ToArray();
+}
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -108,8 +126,11 @@ builder.Services.AddScoped<ISlugService, SlugService>();
 
 var app = builder.Build();
 
-// Seed owner user
-await SeedOwnerUser(app);
+// Configure forwarded headers (must be before other middleware)
+app.UseForwardedHeaders();
+
+// Apply database migrations and seed owner user
+await InitializeDatabase(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -118,7 +139,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Only use HTTPS redirection in development or when not running in container
+// When behind reverse proxy, the proxy handles HTTPS
+if (app.Environment.IsDevelopment() && string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")))
+{
+    app.UseHttpsRedirection();
+}
 
 // Enable Response Compression
 app.UseResponseCompression();
@@ -138,6 +164,29 @@ app.MapGet("/healthz", () => Results.Ok(new { status = "healthy" }))
     .WithName("HealthCheck");
 
 app.Run();
+
+async Task InitializeDatabase(WebApplication app)
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        
+        // Apply any pending migrations
+        await context.Database.MigrateAsync();
+        Console.WriteLine("Database migrations applied successfully");
+        
+        // Seed owner user
+        await SeedOwnerUser(app);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred while migrating the database: {ex.Message}");
+        throw;
+    }
+}
 
 async Task SeedOwnerUser(WebApplication app)
 {

@@ -1,0 +1,52 @@
+services:
+  api:
+    build:
+      context: ./BloggingApp.Api
+      dockerfile: Dockerfile
+    container_name: blogging-api
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ConnectionStrings__DefaultConnection=Data Source=${DATABASE_PATH}
+      - Jwt__Key=${JWT_KEY}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - OWNER_EMAIL=${OWNER_EMAIL}
+      - OWNER_PASSWORD=${OWNER_PASSWORD}
+      - Cors__AllowedOrigins__0=http://${WEB_SUBDOMAIN}.${DOMAIN_NAME}
+      - Cors__AllowedOrigins__1=https://${WEB_SUBDOMAIN}.${DOMAIN_NAME}
+      - Cors__AllowedOrigins__2=http://web:8080
+      - Logging__LogLevel__Default=${LOG_LEVEL}
+      - Logging__LogLevel__Microsoft.AspNetCore=${ASPNETCORE_LOG_LEVEL}
+    volumes:
+      - api-data:/app/data
+    networks:
+      - blogging-network
+    ports:
+      - "8080:8080"
+
+  web:
+    build:
+      context: ./BloggingApp.RazorPages
+      dockerfile: Dockerfile
+    container_name: blogging-web
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ApiBaseUrl=${API_BASE_URL}
+      - Logging__LogLevel__Default=${LOG_LEVEL}
+      - Logging__LogLevel__Microsoft.AspNetCore=${ASPNETCORE_LOG_LEVEL}
+    networks:
+      - blogging-network
+    ports:
+      - "8081:8080"
+
+volumes:
+  api-data:
+    driver: local
+
+networks:
+  blogging-network:
+    driver: bridge

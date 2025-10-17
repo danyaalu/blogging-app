@@ -49,15 +49,9 @@ node_modules/
 wwwroot/lib/
 
 # Ignore compiled Razor files
-**/*.cshtml.g.cs
 
-# Ignore EF Core migrations snapshots
-Migrations/*Snapshot.cs
+# Docker environment file (contains secrets)
+.env
 
-# Ignore sensitive configuration files
-BloggingApp.Api/appsettings.*.json
-BloggingApp.Web/wwwroot/appsettings.*.json
-
-# Ignore lock files
-project.lock.json
-global.json.lock
+# Keep the example file
+!.env.example
