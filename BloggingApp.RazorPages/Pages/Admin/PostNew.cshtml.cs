@@ -40,7 +40,7 @@ public class AdminPostNewModel : PageModel
     {
         if (!await _authService.IsAuthenticatedAsync())
         {
-            return RedirectToPage("/Admin/Login");
+            return RedirectToPage("/admin/login");
         }
 
         ViewData["IsAuthenticated"] = true;
@@ -51,7 +51,7 @@ public class AdminPostNewModel : PageModel
     {
         if (!await _authService.IsAuthenticatedAsync())
         {
-            return RedirectToPage("/Admin/Login");
+            return RedirectToPage("/admin/login");
         }
 
         ViewData["IsAuthenticated"] = true;
@@ -72,11 +72,10 @@ public class AdminPostNewModel : PageModel
 
         if (result != null)
         {
-            return RedirectToPage("/Admin/Posts");
+            return RedirectToPage("/admin/posts");
         }
 
         ErrorMessage = "Failed to create post. Please check your inputs and try again.";
         return Page();
     }
 }
-

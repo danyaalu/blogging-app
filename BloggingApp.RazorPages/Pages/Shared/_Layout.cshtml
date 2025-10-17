@@ -33,7 +33,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/About" ? "active" : "")" href="/About" style="color: #9ca3af;">
+                            <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/About" ? "active" : "")" href="/about" style="color: #9ca3af;">
                                 About
                             </a>
                         </li>
@@ -42,12 +42,12 @@
                         @if (ViewData["IsAuthenticated"] as bool? == true)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="/Admin/Posts" style="color: #9ca3af;">
+                                <a class="nav-link" href="/admin/posts" style="color: #9ca3af;">
                                     <i class="bi bi-pencil-square"></i> Manage Posts
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="/Admin/Logout" style="color: #9ca3af;">
+                                <a class="nav-link" href="/admin/logout" style="color: #9ca3af;">
                                     <i class="bi bi-box-arrow-right"></i> Logout
                                 </a>
                             </li>
@@ -55,7 +55,7 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" href="/Admin/Login" style="color: #9ca3af;">
+                                <a class="nav-link" href="/admin/login" style="color: #9ca3af;">
                                     <i class="bi bi-key"></i> Login
                                 </a>
                             </li>

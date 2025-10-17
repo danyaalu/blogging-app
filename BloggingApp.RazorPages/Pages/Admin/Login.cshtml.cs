@@ -28,7 +28,7 @@ public class AdminLoginModel : PageModel
         
         if (await _authService.IsAuthenticatedAsync())
         {
-            return RedirectToPage("/Admin/Posts");
+            return RedirectToPage("/admin/posts");
         }
         
         return Page();
@@ -48,11 +48,10 @@ public class AdminLoginModel : PageModel
 
         if (response != null)
         {
-            return RedirectToPage("/Admin/Posts");
+            return RedirectToPage("/admin/posts");
         }
 
         ErrorMessage = "Invalid email or password. Please try again.";
         return Page();
     }
 }
-

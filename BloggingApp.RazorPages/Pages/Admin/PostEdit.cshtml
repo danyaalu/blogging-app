@@ -1,4 +1,4 @@
-@page "/Admin/Posts/{id:guid}/Edit"
+@page "/admin/posts/{id:guid}/edit"
 @model AdminPostEditModel
 @{
     ViewData["Title"] = "Edit Post - Admin";
@@ -14,7 +14,7 @@
     else if (Model.Post == null)
     {
         <div class="alert alert-danger">Post not found.</div>
-        <a href="/Admin/Posts" class="btn btn-secondary">Back to Posts</a>
+        <a href="/admin/posts" class="btn btn-secondary">Back to Posts</a>
     }
     else
     {
@@ -69,7 +69,7 @@
                 <button type="submit" class="btn btn-primary">
                     <span>Update Post</span>
                 </button>
-                <a href="/Admin/Posts" class="btn btn-secondary ms-2">Cancel</a>
+                <a href="/admin/posts" class="btn btn-secondary ms-2">Cancel</a>
             </div>
         </form>
     }

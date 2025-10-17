@@ -1,4 +1,4 @@
-@page "/Admin/Posts"
+@page "/admin/posts"
 @model AdminPostsModel
 @{
     ViewData["Title"] = "Manage Posts - Admin";
@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-5">
         <h1 style="font-size: 2rem; font-weight: 300; margin: 0;"><i class="bi bi-newspaper"></i> Manage Posts</h1>
         <div>
-            <a href="/Admin/Posts/New" class="btn btn-success">
+            <a href="/admin/posts/new" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> New Post
             </a>
         </div>
@@ -77,7 +77,7 @@
                                     </td>
                                     <td style="padding: 1rem; color: #9ca3af;">@post.UpdatedAt.ToLocalTime().ToString("MMM dd, yyyy")</td>
                                     <td style="padding: 1rem;">
-                                        <a href="/Admin/Posts/@post.Id/Edit" class="btn btn-sm btn-primary" style="background-color: #60a5fa; border-color: #60a5fa; color: #000000;">
+                                        <a href="/admin/posts/@post.Id/edit" class="btn btn-sm btn-primary" style="background-color: #60a5fa; border-color: #60a5fa; color: #000000;">
                                             <i class="bi bi-pencil"></i> Edit
                                         </a>
                                         <form method="post" asp-page-handler="Delete" asp-route-id="@post.Id" style="display: inline;">

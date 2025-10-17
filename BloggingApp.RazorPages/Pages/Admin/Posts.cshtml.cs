@@ -30,7 +30,7 @@ public class AdminPostsModel : PageModel
     {
         if (!await _authService.IsAuthenticatedAsync())
         {
-            return RedirectToPage("/Admin/Login");
+            return RedirectToPage("/admin/login");
         }
 
         ViewData["IsAuthenticated"] = true;
@@ -42,7 +42,7 @@ public class AdminPostsModel : PageModel
     {
         if (!await _authService.IsAuthenticatedAsync())
         {
-            return RedirectToPage("/Admin/Login");
+            return RedirectToPage("/admin/login");
         }
 
         await _postService.DeletePostAsync(id);
