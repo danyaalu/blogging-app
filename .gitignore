@@ -1,57 +1,82 @@
-# Ignore build outputs for BloggingApp.Api
-BloggingApp.Api/bin/
-BloggingApp.Api/obj/
-BloggingApp.Api/publish/
+# .gitignore for BloggingApp (ASP.NET Core + Razor Pages + Node + Docker)
 
-# Ignore build outputs for BloggingApp.RazorPages
-BloggingApp.RazorPages/bin/
-BloggingApp.RazorPages/obj/
-BloggingApp.RazorPages/publish/
-
-# Ignore user-specific files
-*.user
+# --- Visual Studio / .NET ---
+.vs/
 *.suo
+*.user
 *.userosscache
 *.sln.docstates
 
-# Ignore Rider/JetBrains IDE files
+# Build outputs
+**/bin/
+**/obj/
+**/publish/
+*.ilk
+*.pdb
+
+# NuGet
+*.nupkg
+packages/
+.nuget/
+
+# Test results / coverage
+TestResults/
+*.trx
+*.coverage
+coverage/
+
+# --- IDEs ---
+# Rider / JetBrains
 .idea/
 *.iml
 
-# Ignore Visual Studio Code files
+# VS Code
 .vscode/
 
-# Ignore logs and temporary files
+# --- Node / client ---
+node_modules/
+wwwroot/lib/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# --- Logs & temp ---
 *.log
+logs/
 *.tmp
 *.temp
 *.pid
 *.sublime-workspace
 
-# Ignore OS-specific files
+# --- OS ---
 .DS_Store
 Thumbs.db
 
-# Ignore database files
-BloggingApp.Api/Data/blogging.db
+# --- Database ---
+# Ignore sqlite databases and temporary sqlite files
+*.db
+*.db-shm
+*.db-wal
+# If you intentionally want to commit the DB, remove these lines and run `git rm --cached` as needed.
 
-# Allow database migrations and schema files
+# Keep EF Migrations source files (they are part of source)
+!BloggingApp.Api/Migrations/
 !BloggingApp.Api/Migrations/*.cs
 !BloggingApp.Api/Migrations/*.Designer.cs
-!BloggingApp.Api/Data/blogging.db
 
-# Ignore temporary database files
-BloggingApp.Api/Data/blogging.db-shm
-BloggingApp.Api/Data/blogging.db-wal
-
-# Ignore dependency directories
-node_modules/
-wwwroot/lib/
-
-# Ignore compiled Razor files
-
-# Docker environment file (contains secrets)
+# --- Secrets / Environment ---
 .env
-
-# Keep the example file
+.env.*.local
+.env.local
+secrets.json
+# Keep example env file in repo
 !.env.example
+
+# --- Docker / Compose ---
+docker-compose.override.yml
+
+# --- Misc ---
+*.sublime-project
+
+# Allow explicit files if needed (examples)
+# !/path/to/file
