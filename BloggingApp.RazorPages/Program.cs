@@ -67,6 +67,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Add security headers middleware
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
+    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    context.Response.Headers["X-Permitted-Cross-Domain-Policies"] = "none";
+    context.Response.Headers["X-Download-Options"] = "noopen";
+    await next();
+});
+
 // Only use HTTPS redirection in development or when not running in container
 // When behind reverse proxy, the proxy handles HTTPS
 if (app.Environment.IsDevelopment() && string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER")))

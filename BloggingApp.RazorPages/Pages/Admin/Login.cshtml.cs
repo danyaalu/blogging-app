@@ -21,6 +21,25 @@ public class AdminLoginModel : PageModel
     public string Password { get; set; } = string.Empty;
 
     public string ErrorMessage { get; set; } = string.Empty;
+    public bool IsRateLimited { get; set; } = false;
+    public int? RetryAfterSeconds { get; set; }
+    public int? RetryAfterMinutes { get; set; }
+
+    // Computed properties for the view
+    public bool HasRetryInfo => RetryAfterSeconds.HasValue || RetryAfterMinutes.HasValue;
+    public bool ShowSeconds => RetryAfterSeconds.HasValue && RetryAfterSeconds < 60;
+    public bool ShowMinutes => RetryAfterMinutes.HasValue && (!RetryAfterSeconds.HasValue || RetryAfterSeconds >= 60);
+    public string RetryTimeDisplay
+    {
+        get
+        {
+            if (ShowSeconds)
+                return $"You can try again in {RetryAfterSeconds} seconds.";
+            else if (ShowMinutes)
+                return $"You can try again in approximately {RetryAfterMinutes} minutes.";
+            return "";
+        }
+    }
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -44,14 +63,22 @@ public class AdminLoginModel : PageModel
         }
 
         var request = new LoginRequest(Email, Password);
-        var response = await _authService.LoginAsync(request);
+        var result = await _authService.LoginAsync(request);
 
-        if (response != null)
+        if (result.Success && result.LoginResponse != null)
         {
             return RedirectToPage("/admin/posts");
         }
 
-        ErrorMessage = "Invalid email or password. Please try again.";
+        // Handle rate limiting errors
+        if (result.IsRateLimited)
+        {
+            IsRateLimited = true;
+            RetryAfterSeconds = result.RetryAfterSeconds;
+            RetryAfterMinutes = result.RetryAfterMinutes;
+        }
+
+        ErrorMessage = result.ErrorMessage ?? "An error occurred while trying to log in.";
         return Page();
     }
 }

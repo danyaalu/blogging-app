@@ -9,13 +9,40 @@
         <div class="col-md-6 col-lg-4">
             <div class="card shadow">
                 <div class="card-body p-4">
-                    <h1 class="h3 mb-4 text-center">Owner Login</h1>
+                    <h1 class="h3 mb-4 text-center">Admin Login</h1>
 
                     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
                     {
-                        <div class="alert alert-danger" role="alert">
-                            <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
-                        </div>
+                        @if (Model.IsRateLimited)
+                        {
+                            <div class="alert alert-warning border-warning" role="alert">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-shield-exclamation text-warning me-2 mt-1" style="font-size: 1.2rem;"></i>
+                                    <div>
+                                        <h6 class="alert-heading mb-2">Security Protection Active</h6>
+                                        <p class="mb-2">@Model.ErrorMessage</p>
+                                        @if (Model.HasRetryInfo)
+                                        {
+                                            <hr class="my-2">
+                                            <div class="small text-muted">
+                                                <i class="bi bi-info-circle"></i>
+                                                This security measure helps protect against unauthorized access attempts.
+                                                @if (!string.IsNullOrEmpty(Model.RetryTimeDisplay))
+                                                {
+                                                    <br />@Model.RetryTimeDisplay
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-danger" role="alert">
+                                <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
+                            </div>
+                        }
                     }
 
                     <form method="post">

@@ -1,5 +1,6 @@
 using BloggingApp.Api.DTOs;
 using BloggingApp.Api.Models;
+using BloggingApp.Api.Attributes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [RateLimit(maxAttempts: 5, windowMinutes: 15, keyPrefix: "login")]
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
@@ -89,4 +91,3 @@ public class AuthController : ControllerBase
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
-

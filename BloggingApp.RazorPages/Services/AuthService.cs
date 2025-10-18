@@ -1,16 +1,28 @@
 using BloggingApp.RazorPages.Models;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http.Json;
+using System.Net;
+using System.Text.Json;
 
 namespace BloggingApp.RazorPages.Services;
 
 public interface IAuthService
 {
-    Task<LoginResponse?> LoginAsync(LoginRequest request);
+    Task<AuthResult> LoginAsync(LoginRequest request);
     Task LogoutAsync();
     Task<string?> GetTokenAsync();
     Task<bool> IsAuthenticatedAsync();
     Task SetTokenAsync(string token);
+}
+
+public class AuthResult
+{
+    public bool Success { get; set; }
+    public LoginResponse? LoginResponse { get; set; }
+    public string? ErrorMessage { get; set; }
+    public bool IsRateLimited { get; set; }
+    public int? RetryAfterSeconds { get; set; }
+    public int? RetryAfterMinutes { get; set; }
 }
 
 public class AuthService : IAuthService
@@ -25,7 +37,7 @@ public class AuthService : IAuthService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<LoginResponse?> LoginAsync(LoginRequest request)
+    public async Task<AuthResult> LoginAsync(LoginRequest request)
     {
         try
         {
@@ -37,15 +49,76 @@ public class AuthService : IAuthService
                 if (loginResponse != null)
                 {
                     await SetTokenAsync(loginResponse.AccessToken);
-                    return loginResponse;
+                    return new AuthResult 
+                    { 
+                        Success = true, 
+                        LoginResponse = loginResponse 
+                    };
                 }
             }
             
-            return null;
+            // Handle rate limiting (HTTP 429)
+            if (response.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                try
+                {
+                    var errorContent = await response.Content.ReadFromJsonAsync<JsonElement>();
+                    var errorMessage = "Too many login attempts. Please try again later.";
+                    
+                    if (errorContent.TryGetProperty("message", out var messageProperty))
+                    {
+                        errorMessage = messageProperty.GetString() ?? errorMessage;
+                    }
+                    
+                    int? retryAfterSeconds = null;
+                    int? retryAfterMinutes = null;
+                    
+                    if (errorContent.TryGetProperty("details", out var details))
+                    {
+                        if (details.TryGetProperty("retryAfterSeconds", out var retrySecondsProperty))
+                        {
+                            retryAfterSeconds = retrySecondsProperty.GetInt32();
+                        }
+                        if (details.TryGetProperty("retryAfterMinutes", out var retryMinutesProperty))
+                        {
+                            retryAfterMinutes = (int)retryMinutesProperty.GetDouble();
+                        }
+                    }
+                    
+                    return new AuthResult
+                    {
+                        Success = false,
+                        IsRateLimited = true,
+                        ErrorMessage = errorMessage,
+                        RetryAfterSeconds = retryAfterSeconds,
+                        RetryAfterMinutes = retryAfterMinutes
+                    };
+                }
+                catch
+                {
+                    return new AuthResult
+                    {
+                        Success = false,
+                        IsRateLimited = true,
+                        ErrorMessage = "Too many login attempts. Please try again later."
+                    };
+                }
+            }
+            
+            // Handle other authentication errors
+            return new AuthResult
+            {
+                Success = false,
+                ErrorMessage = "Invalid email or password. Please try again."
+            };
         }
         catch
         {
-            return null;
+            return new AuthResult
+            {
+                Success = false,
+                ErrorMessage = "An error occurred while trying to log in. Please try again."
+            };
         }
     }
 
@@ -73,4 +146,3 @@ public class AuthService : IAuthService
         return Task.CompletedTask;
     }
 }
-
