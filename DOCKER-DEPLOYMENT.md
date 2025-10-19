@@ -11,7 +11,7 @@ This guide covers deploying the BloggingApp using Docker and Docker Compose, con
 
 Both services run on HTTP only. Your reverse proxy will handle SSL/TLS termination.
 
-## Quick Start
+## Quick Start!
 
 ### 1. Configure Environment Variables
 
